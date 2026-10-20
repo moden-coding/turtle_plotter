@@ -126,15 +126,30 @@ def _open(path):
     return img
 
 
-def load_photo(filename, columns, contrast=True, quiet=False):
+def load_photo(filename, columns, rotate=0, square=False, contrast=True, quiet=False):
     """
     Open a photo from the photos folder and return it as a grid of
     brightness numbers (a list of rows, top row first).
 
+    Required:
     filename  the photo's name, in quotes, like "dog.jpg"
     columns   how many cells across, like 30
-    contrast  True (the default) stretches the darkest part to near-black
-              and the lightest to near-white. False keeps the photo as it is.
+
+    Optional (leave them out and you get the defaults):
+    rotate    turns the photo clockwise: 0 (default), 90, 180, or 270.
+              Phone photos are turned upright for you, so you only need this
+              if your photo still comes out sideways or upside down.
+    square    False (default) keeps the whole photo.
+              True cuts the left and right (or top and bottom) off evenly,
+              leaving a square from the middle.
+    contrast  True (default) makes the darkest part near-black and the
+              lightest part near-white. False keeps the photo as it is.
+    quiet     False (default) prints the grid size. True prints nothing.
+
+    Examples:
+        load_photo("dog.jpg", 30)
+        load_photo("dog.jpg", 30, rotate=90)
+        load_photo("dog.jpg", 30, square=True)
     """
     if isinstance(columns, float) and columns.is_integer():
         columns = int(columns)
@@ -149,9 +164,28 @@ def load_photo(filename, columns, contrast=True, quiet=False):
         raise PhotoError("\n\n" + str(columns) + " columns is far too many for the plotter. "
                          "Try something between 15 and 40.")
 
+    if rotate not in (0, 90, 180, 270, -90, 360):
+        raise PhotoError(
+            "\n\nrotate can be 0, 90, 180, or 270 (degrees clockwise), like this:\n"
+            '    load_photo("dog.jpg", 30, rotate=90)'
+        )
+    if not isinstance(square, bool) or not isinstance(contrast, bool):
+        raise PhotoError("\n\nsquare and contrast are True or False, with a capital letter "
+                         "and no quotes, like this:\n    load_photo(\"dog.jpg\", 30, square=True)")
+
     path = _find(filename)
     Image, ImageOps = _pillow()
     img = _open(path)
+
+    turn = rotate % 360
+    if turn:
+        # Pillow turns counter-clockwise, so 90 clockwise is 270 its way
+        img = img.rotate(-turn, expand=True)
+    if square:
+        w, h = img.size
+        side = min(w, h)
+        left, top = (w - side) // 2, (h - side) // 2
+        img = img.crop((left, top, left + side, top + side))
 
     # transparent parts become white paper, not black
     if img.mode in ("RGBA", "LA") or (img.mode == "P" and "transparency" in img.info):
