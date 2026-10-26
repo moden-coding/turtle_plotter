@@ -8,8 +8,8 @@ from photo_tools import load_photo, preview, show_numbers
 # 1. YOUR PHOTO
 #    Drag your photo into the photos folder, then set these two lines.
 # ---------------------------------------------------------------
-PHOTO = "dog.jpg"     # the photo's exact name, in quotes (capitals count)
-COLUMNS = 30          # how many cells across. Rows are worked out for you.
+PHOTO = "gann academy entrance.jpg"     # the photo's exact name, in quotes (capitals count)
+COLUMNS = 60          # how many cells across. Rows are worked out for you.
 
 pixels = load_photo(PHOTO, COLUMNS)
 
@@ -27,6 +27,7 @@ pixels = load_photo(PHOTO, COLUMNS)
 # Helpers for testing (delete before you plot):
 #   preview(pixels)        shows your grid as gray squares in its own window
 #   show_numbers(pixels)   prints every number
+preview(pixels)
 
 
 # ---------------------------------------------------------------
