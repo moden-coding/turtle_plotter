@@ -4,6 +4,13 @@
 import turtle
 from photo_tools import load_photo, preview, show_numbers
 
+# ---- Paper setup: 1 unit = 1 mm, (0,0) = top-left corner ----
+SHEET_W = 278   # landscape A4; for portrait use 210
+SHEET_H = 215   # landscape A4; for portrait use 297
+
+screen = turtle.Screen()
+screen.setup(width=SHEET_W * 3, height=SHEET_H * 3)       # window shaped like the paper
+screen.setworldcoordinates(0, -SHEET_H, SHEET_W, 0)       # to
 # ---------------------------------------------------------------
 # 1. YOUR PHOTO
 #    Drag your photo into the photos folder, then set these two lines.
