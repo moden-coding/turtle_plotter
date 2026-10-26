@@ -58,5 +58,5 @@ t.speed(0)
 
 
 
-t.hideturtle()
+# t.hideturtle()
 turtle.done()
